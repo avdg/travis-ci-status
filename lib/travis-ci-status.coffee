@@ -23,26 +23,7 @@ module.exports =
   #
   # Returns nothing.
   activate: ->
-    return unless @isTravisProject() and @isGitHubRepo()
-
-    atom.travis = new TravisCi({
-      version: '2.0.0',
-      pro: atom.config.get('travis-ci-status.useTravisCiPro')
-    })
-
-    atom.workspaceView.command 'travis-ci-status:open-on-travis', =>
-      @openOnTravis()
-
-    createStatusEntry = =>
-      nwo = @getNameWithOwner()
-      @buildMatrixView = new BuildMatrixView(nwo)
-      @buildStatusView = new BuildStatusView(nwo, @buildMatrixView)
-
-    if atom.workspaceView.statusBar
-      createStatusEntry()
-    else
-      atom.packages.once 'activated', ->
-        createStatusEntry()
+    @isGitHubRepo() and @isTravisProject((e) => @init() if e)
 
   # Internal: Deactive the package and destroys any views.
   #
@@ -78,10 +59,47 @@ module.exports =
   # Internal: Check there is a .travis.yml configuration file.
   #
   # Returns true if there is a .travis.yml configuration file, else false.
-  isTravisProject: ->
+  isTravisProjectSync: ->
     return false unless atom.project.path?
     travisConf = path.join(atom.project.path, '.travis.yml')
     fs.existsSync(travisConf)
+
+  # Internal: Check there is a .travis.yml configuration file
+  # Results are passed in callback f
+  #
+  # Returns nothing
+  isTravisProject: (f) ->
+    return unless f and f instanceof Function
+    if !atom.project.path
+      f(false)
+    else
+      travisConf = path.join(atom.project.path, '.travis.yml')
+      fs.exists(travisConf, f)
+    null
+
+  # Internal: initializes any views
+  #
+  # Returns nothing
+  init: ->
+    atom.travis = new TravisCi({
+      version: '2.0.0',
+      pro: atom.config.get('travis-ci-status.useTravisCiPro')
+    })
+
+    atom.workspaceView.command 'travis-ci-status:open-on-travis', =>
+      @openOnTravis()
+
+    createStatusEntry = =>
+      nwo = @getNameWithOwner()
+      @buildMatrixView = new BuildMatrixView(nwo)
+      @buildStatusView = new BuildStatusView(nwo, @buildMatrixView)
+
+    if atom.workspaceView.statusBar
+      createStatusEntry()
+    else
+      atom.packages.once 'activated', ->
+        createStatusEntry()
+    null
 
   # Internal: Open the project on Travis CI in the default browser.
   #
