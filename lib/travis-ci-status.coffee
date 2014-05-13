@@ -57,7 +57,7 @@ module.exports =
     /([^\/:]+)\/([^\/]+)$/.exec(url.replace(/\.git$/, ''))[0]
 
   # Internal: Check there is a .travis.yml configuration file
-  # Results are passed in callback f
+  # Results are passed in callback
   #
   # Returns nothing
   isTravisProject: (callback) ->
