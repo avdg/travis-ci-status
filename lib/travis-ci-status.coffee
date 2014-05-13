@@ -68,14 +68,11 @@ module.exports =
   # Results are passed in callback f
   #
   # Returns nothing
-  isTravisProject: (f) ->
-    return unless f and f instanceof Function
-    if !atom.project.path
-      f(false)
-    else
-      travisConf = path.join(atom.project.path, '.travis.yml')
-      fs.exists(travisConf, f)
-    null
+  isTravisProject: (callback) ->
+    return unless callback instanceof Function
+    return callback(false) unless atom.project.path
+    conf = path.join(atom.project.path, '.travis.yml')
+    fs.exists(conf, f)
 
   # Internal: initializes any views
   #
