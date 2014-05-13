@@ -56,14 +56,6 @@ module.exports =
     return null unless url?
     /([^\/:]+)\/([^\/]+)$/.exec(url.replace(/\.git$/, ''))[0]
 
-  # Internal: Check there is a .travis.yml configuration file.
-  #
-  # Returns true if there is a .travis.yml configuration file, else false.
-  isTravisProjectSync: ->
-    return false unless atom.project.path?
-    travisConf = path.join(atom.project.path, '.travis.yml')
-    fs.existsSync(travisConf)
-
   # Internal: Check there is a .travis.yml configuration file
   # Results are passed in callback f
   #
