@@ -23,7 +23,7 @@ module.exports =
   #
   # Returns nothing.
   activate: ->
-    @isGitHubRepo() and @isTravisProject((e) => @init() if e)
+    @isGitHubRepo() and @isTravisProject((e) => e and @init())
 
   # Internal: Deactive the package and destroys any views.
   #
