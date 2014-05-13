@@ -23,7 +23,8 @@ module.exports =
   #
   # Returns nothing.
   activate: ->
-    @isGitHubRepo() and @isTravisProject((e) => e and @init())
+    @isTravisProject((e) => e and @isGitHubRepo() and @init())
+    return
 
   # Internal: Deactive the package and destroys any views.
   #
@@ -32,6 +33,7 @@ module.exports =
     atom.travis = null
     @buildStatusView?.destroy()
     @buildMatrixView?.destroy()
+    return
 
   # Internal: Serialize each view state so it can be restored when activated.
   #
@@ -88,7 +90,7 @@ module.exports =
     else
       atom.packages.once 'activated', ->
         createStatusEntry()
-    null
+    return
 
   # Internal: Open the project on Travis CI in the default browser.
   #
