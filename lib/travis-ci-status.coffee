@@ -64,7 +64,7 @@ module.exports =
     return unless callback instanceof Function
     return callback(false) unless atom.project.path
     conf = path.join(atom.project.path, '.travis.yml')
-    fs.exists(conf, f)
+    fs.exists(conf, callback)
 
   # Internal: initializes any views
   #
